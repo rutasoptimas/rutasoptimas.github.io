@@ -2,7 +2,7 @@ blockquote {
   font-style: italic
 }
 
-/*----------LOGO above TOC---------*/
+/*----------LOGO above TOC---------
 
 #TOC::before {
   content: "";
@@ -13,4 +13,5 @@ blockquote {
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
-}
+} */
+
