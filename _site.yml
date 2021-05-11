@@ -1,0 +1,24 @@
+name: "Proyecto RO"
+output_dir: "."
+navbar:
+  title: "<img id=\"logo\" style=\"width: 200px;\" src=\"logo_ine.png\" />"
+  type: inverse
+  left:
+    - text: "Rutas SP"
+      href: index_SP.html
+    - text: "Routes EN"
+      href: index_EN.html
+    - text: "App"
+      href: app_shyni_page.html
+    - text: "Acerca de RO"
+      href: about.html
+  right:
+    - href: https://github.com/rutasoptimas/
+      icon: fa-github
+output:
+  html_document:
+    theme: paper
+    highlight: textmate
+    include:
+      after_body: footer.html
+    css: styles.css

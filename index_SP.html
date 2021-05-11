@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Proyecto Rutas óptimas</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="site_libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img id="logo" style="width: 200px;" src="logo_ine.png" /></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index_SP.html">Rutas SP</a>
+</li>
+<li>
+  <a href="index_EN.html">Routes EN</a>
+</li>
+<li>
+  <a href="app_shyni_page.html">App</a>
+</li>
+<li>
+  <a href="about.html">Acerca de RO</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rutasoptimas/">
+    <span class="fas fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Proyecto Rutas óptimas</h1>
+
+</div>
+
+
+<div id="resumen" class="section level1">
+<h1>Resumen</h1>
+<p>El presente s sitio es el resultado del proceso realizado por el equipo de rutas óptimas, el cual resume el trabajo desarrollado por un grupo multidisciplinario de profesionales el 2020 y que fue liderado por el Subdepartamento de Investigación Estadística. Dicho proceso dio como resultado el documento titulado <em>Rutas óptimas para recolectores del IPC</em> del cual, el documento que se presenta a continuación, es su parte aplicada. Los hitos del proceso describen la elección de un algoritmo genético que permite ordenar la cercanía entre los nodos y dibujar la ruta que debe seguir un recolector del IPC sobre los lugares asignados. Dicha implementación fue estadísticamente significativa, la reducción en los tiempos de viaje fue del 15% en un total de 161 puntos en el espacio.</p>
+<p>Usaremos algoritmos genéticos (AG) para resolver el problema de vendedor ambulante. Incorporaremos este método que utiliza un proceso iterativo de 100 soluciones de algoritmos genéticos. Por lo tanto, seleccionaremos lo mejor de todos esos procesos para resolver un TSP simple con 10 puntos espaciales. También tenemos que los AG son un método de optimización o algoritmo de búsqueda. En este sentido, un algoritmo de búsqueda puede exhibir un comportamiento heurístico si se ejecuta de manera continua, adaptándose a la dinámica del entorno en el que se utiliza, exhibiendo de este modo una conducta de aprendizaje.</p>
+<p>Se ilustra el proceso de generación de <em>rutas óptimas</em> mediante el software de programación R<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> a través del uso de un algoritmo genético (AG) creado mediante la librería GA<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, el cual es aplicado mediante una serie de cien simulaciones de las que se escoge la que converge a un óptimo. La aplicación del AG es estimada sobre una matriz de distancias geográficas de la cual se construye la ruta que recorre las calles de Chile a través de un Motor de Rutas de código abierto (OSRM<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>) programado originalmente en C++ y que fue implementado sobre un contenedor Docker<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> el que fue implementado mediante línea de comando en el Terminal del sistema operativo Linux Ubuntu<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> en la búsqueda de solución a rutas o recorridos para los recolectores de datos en terreno.</p>
+</div>
+<div id="introducción" class="section level1">
+<h1>Introducción</h1>
+<p>Originalmente conocido como el problema del vendedor viajero (TSP para abreviar), la idea es encontrar la forma más económica de visitar todos los lugares y regresar -o no- al punto de partida. La forma de visitar todos los lugares es simplemente el orden en que se visitan dichos puntos, el recorrido se denomina tour o circuito por dichos puntos, tal como lo define <span class="citation">Flood (1956)</span>.</p>
+<p>Este ejercicio que suena modesto es de hecho uno de los problemas más intensamente investigados en matemáticas computacionales, manifiesta <span class="citation">Little et al. (1963)</span>. Ha inspirado estudios matemáticos, informáticos, químicos, físicos y una amplia variedad de investigaciones. Los profesores de algunos colegios en el mundo utilizan el TSP para introducir matemáticas discretas en las escuelas primarias, intermedias y secundarias, así como en universidades y escuelas profesionales. El TSP ha tenido aplicaciones en las áreas de logística, genética, fabricación, telecomunicaciones y neurociencia, por nombrar solo algunas disciplinas, según <span class="citation">Applegate et al. (1998)</span>.</p>
+<p>Por otro lado, <span class="citation">Jaffee (1996)</span> manifiesta que el atractivo del TSP lo ha elevado a uno de los pocos problemas contemporáneos de las matemáticas para convertirse en parte de la cultura popular. Su interesante nombre seguramente ha jugado un papel, pero la razón principal del gran interés es el hecho de que este modelo de fácil comprensión aún elude una solución general. La simplicidad del TSP, junto con su aparente intratabilidad, lo convierte en una plataforma ideal para desarrollar ideas y técnicas para abordar problemas computacionales en general.</p>
+<div id="breve-historia-del-problema-del-vendedor-viajero" class="section level2">
+<h2>Breve historia del problema del vendedor viajero</h2>
+<p>El origen del nombre “problema del vendedor viajero” es misterioso. No parece haber ninguna documentación que señale al creador del nombre, y es desconocido cuándo entró en uso por primera vez. Uno de los primeros investigadores de TSP y uno de los más influyentes fue Merrill Flood en EE.UU. Sin embargo, también existen registros previos en Alemania y en Suiza en relación al mismo tipo de problema, según <span class="citation">Applegate et al. (2003)</span>.</p>
+<p>En la década de 1950, el nombre de TSP se usaba ampliamente. La primera referencia que contiene el término parece ser un informe de 1949, <em>“Sobre el juego hamiltoniano (un problema de los vendedores viajeros)”</em>, pero parece claro por el escrito no se estaba introduciendo el nombre. Sin embargo, es posible mencionar que en algún momento durante la década de 1930 o 1940, muy probablemente en Princeton, el TSP tomó su nombre y los matemáticos comenzaron a estudiar el problema en serio, según <span class="citation">Applegate et al. (2003)</span>.</p>
+<p>Algunos registros históricos obtenidos desde <span class="citation">Applegate et al. (2003)</span> muestran lo llamativo del problema del vendedor viajero:</p>
+<center>
+<img src="imagenes/TSP_1981.png" title="fig:" style="width:50.0%" alt="imagen histórica del TSP." />
+</center>
+<p><br/><br/></p>
+<center>
+<img src="imagenes/TSP_USA.png" title="fig:" style="width:50.0%" alt="Concurso de las 33 ciudades en EE.UU. 1964." />
+</center>
+<p><br/><br/></p>
+</div>
+<div id="algoritmo-genético" class="section level2">
+<h2>Algoritmo genético</h2>
+<p>La idea subyacente de un algoritmo es una serie de pasos organizados que describe el proceso que se debe seguir, para dar solución a un problema específico. En los años 70’s, de la mano de John Henry Holland, surgió una de las líneas más prometedoras de la inteligencia artificial, la de los algoritmos genéticos, (AG). Son llamados así porque se inspiran en la evolución biológica y su base genético-molecular (<span class="citation">Mirjalili (2019)</span>). Estos algoritmos hacen evolucionar una población de individuos (para este caso particular, recorridos) sometiéndola a acciones aleatorias semejantes a las que actúan en la evolución biológica (mutaciones y recombinaciones genéticas), así como también a una selección de acuerdo con algún criterio, en función del cual se decide que recorridos son más adaptados, que “sobreviven,” y cuáles los menos aptos, que son descartados.</p>
+<p>Charles Darwin una vez dijo en su libro, el origen de las especies: <em>“No es la más fuerte de las especies la que sobrevive, ni la más inteligente, sino la que mejor responde al cambio”</em> <span class="citation">Darwin (1859)</span>. En este sentido debemos comprender el concepto de “evolución” en el contexto del machine learning y así entender el mecanismo de funcionamiento de este algoritmo.</p>
+<p>Por lo tanto, el algoritmo genético es un procedimiento adaptativo basado en los mecanismos de genética natural y selección natural. El algoritmo genético tiene dos componentes esenciales: ajuste a la sobrevivencia y diversidad genética. Originalmente desarrollado por <span class="citation">Holland (1975)</span>, el algoritmo Genético (AG) es una búsqueda heurística que se asimila al proceso de la evolución natural. Usa el concepto de “Selección natural” y “Genética inherente” de <span class="citation">Darwin (1859)</span>. Actualmente existen una infinidad de aplicaciones de algoritmos Genéticos como optimización y resolución de problemas de agendamiento, ingeniería del espacio aéreo, astronomía y astrofísica, química, ingeniería eléctrica, mercados financieros, ingeniería de materiales, biología molecular, reconocimiento de patrones y minería de datos y robótica, solo por nombrar algunas áreas donde se aplica.</p>
+<p>En nuestro caso, el algoritmo genético (AG) es usado para resolver el TSP. Sin embargo, agregamos un componente adicional. Es decir, generamos 100 simulaciones de algoritmos genéticos que buscan soluciones, que luego se contrastan y selecciona la respuesta que más veces se repite en el total de simulaciones, con el fin de obtener el mejor resultado posible. Este componente adicional entrega el carácter de aprendizaje al proceso de búsqueda de soluciones.</p>
+</div>
+</div>
+<div id="funcionamiento-en-r" class="section level1">
+<h1>Funcionamiento en R</h1>
+<p><span class="citation">R Core Team (2020)</span> es el proyecto que sustenta el <em>Software estadístico R</em>, en el existe todo un esquema de trabajo que permite la creación de un proceso de implementación limpio del problema del vendedor viajero. Este proceso comienza con la lectura de las librerías que nos permiten trabajar con bases de datos (<span class="citation">Wickham and Bryan (2019)</span>, <span class="citation">Wickham et al. (2020)</span> y <span class="citation">Bittinger (2020)</span>) y bases de datos espaciales (<span class="citation">Bivand, Pebesma, and Gomez-Rubio (2013)</span> y <span class="citation">Pebesma (2018)</span>) por un lado y por el otro, un conjunto de librerías que nos permiten el procesamiento de dicha información espacial mediante el algoritmo genético (<span class="citation">Scrucca (2012)</span>) y creación y mapeo de la ruta resultante (<span class="citation">Giraud (2020)</span> y <span class="citation">Cheng, Karambelkar, and Xie (2019)</span>). Antes que todo, un aspecto crucial es la puesta en marcha de un sistema operativo <a href="https://ubuntu.com/download">Linux Ubuntu</a> (<span class="citation">Raggi, Thomas, and Van Vugt (2011)</span>) que nos permite la implementación de un motor de ruteo de código abierto (proyecto OSRM, <span class="citation">Huber and Rust (2016)</span>) el que, a su vez, nos obliga a la ejecución de un contenedor <a href="https://www.docker.com/">Docker</a> (<span class="citation">Boettiger (2015)</span>). Para conocer las bondades de trabajar con contenedores y en especial Docker, se recomienda revisar aspectos generales en el <a href="https://www.docker.com/resources/what-container">sitio web de la aplicación</a>.</p>
+<p>Por lo tanto, debemos tener acceso a un conjunto de elementos necesarios para ejecutar el proceso. Los componentes necesarios son: un sistema operativo <em>Linux-Ubuntu</em>, <em>R (con sus librerías)</em>, <em>Rstudio</em> y <em>OSRM</em> implementado en contenedor Docker. El proceso está compuesto de cuatro etapas; la primera corresponde a la lectura de las bases de datos espaciales, las que permiten la identificación de los puntos de los lugares a visitar, que deben estar correctamente determinados geoespacialmente. En el caso de Chile, estos puntos son determinados mediante estándares espaciales debidamente implementados, que en nuestro caso fue tarea del Departamento de Geografía, quienes nos hicieron entrega de los puntos latitud y longitud de cada establecimiento. La segunda etapa, corresponde al procesamiento de una matriz de distancias mediante un método que incluye la participación de cien algoritmos genéticos, este proceso considera una combinación de todas las soluciones de que se extrae la que mejor respuesta; la tercera etapa es la generación de la ruta producto del ordenamiento espacial previamente calculado mediante un motor de rutas (<em>OSRM</em>) que permitirá utilizar datos reales (provenientes de <em>Open Street Map</em>) conocidos para moverse entre un punto y otro; y la cuarta y última etapa es el mapeo de la solución en un mapa interactivo.</p>
+<p>En este informe la determinación geoespacial se realizará mediante la librería <strong>tmaptools</strong> (<span class="citation">Tennekes (2020)</span>) a través de la función <strong>geocode_OSM</strong>, que usa el estándar definido para los datos distribuidos mediante OSM (<span class="citation">Bennett (2010)</span>) y que pueden ser revisados en su documento oficial<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Además, del uso que daremos debemos cumplir con no sobredemandar estos servidores que tienen un uso no-intensivo, ya que podríamos ser bloqueados en caso que hagamos un uso intensivo. Por otro lado, con el fin de resguardar la información que maneja el INE, usaremos direcciones y puntos espaciales correspondientes a sitios no sensibles y museos (10 en total) localizados en el centro de Santiago. De esta forma, evitamos publicar información que pueda ser privada o sensible y al mismo tiempo, no sobredemandamos a los servidores públicos del proyecto OSM<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.</p>
+</div>
+<div id="motor-de-ruteo-osrm" class="section level1">
+<h1>Motor de ruteo (OSRM)</h1>
+<p>Un motor de ruteo es un sistema que, a partir de un listado de puntos espaciales ordenados, devuelve un recorrido por las calles, el tipo de transporte, el tiempo y la distancia total recorrida. Por lo tanto, en el mundo del mapeo web, el camino hacia la realidad del cálculo optimizado de rutas es uno de los grandes desafíos. No se trata solamente de ir del punto <span class="math inline">\(A\)</span> hacia el punto <span class="math inline">\(B\)</span>, sino de proponer varias opciones, itinerarios alternativos, tomar en cuenta las diferentes modalidades de transporte (automóvil, caminata, tren, bicicleta, bote, etc.), incluir etapas, respetar los sentidos de las calles. De este modo, el surgimiento de los equipos móviles refuerza la importancia de estos servicios, cuya eficiencia depende de la calidad de los datos utilizados.</p>
+<p>En esta experiencia, Google Maps no es una opción de trabajo en una institución del Estado. Luego de investigar diferentes alternativas, nos decantamos por la idea de armar un motor de itinerarios, libre y gratis, específico y muy conveniente para nuestra realidad, muchas veces limitada en recursos económicos.</p>
+<p>El mapa esquemático que describe el proceso de implementación considera el trabajo mediante el sistema operativo Linux Ubuntu 20.04 (<span class="citation">Petersen (2020)</span>), el cual fue implementado luego en un servidor Linux Centos en la institución. Este proceso, primero necesitó la instalación de la herramienta Docker (<span class="citation">Boettiger (2015)</span>), que es un sistema de contenedores que permitirá la consulta (mediante una API generada) de las rutas cuando es puesto en marcha el software del proyecto OSRM (<span class="citation">Giraud (2020)</span>). En esta sección, detallamos el proceso usado para armar el motor de enrutamiento.</p>
+<div id="inicios-del-proyecto-osrm" class="section level2">
+<h2>Inicios del proyecto OSRM</h2>
+<p>En inglés Open Source Routing Machine (OSRM), significa que es una máquina de enrutamiento de código abierto y corresponde en otras palabras a un servidor de enrutamiento diseñado para usar con los datos aportados desde el proyecto OpenStreetMap (OSM) también del mundo del software libre.</p>
+<p>El proyecto OSRM mostró sus primeros frutos el 9 de julio de 2010, construido completamente por el trabajo desarrollado por Dennis Luxen. El siguiente año, Luxen presenta sobre OSRM en la conferencia GIS ’11 de ACM junto con Christian Vetter<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> Actualmente el equipo de enrutamiento de Mapbox continúa el proyecto, manteniendolo y desarrollandolo (<span class="citation">Detomasi, Mathieu, and Botto (2018)</span>).</p>
+</div>
+<div id="características" class="section level2">
+<h2>Características</h2>
+<p>En contraste con la mayoría de servidores de enrutamiento, OSRM (<span class="citation">Giraud (2020)</span>) no utiliza una variante de A* para calcular la ruta más corta, sino que usa las jerarquías de contracción. Esto da como resultado tiempos de consulta muy rápidos, normalmente por debajo de 1 milisegundo para conjuntos de datos grandes sobre los mil nodos. Por eso, OSRM es en un buen candidato para las aplicaciones y sitios de enrutamiento receptivos basados en la web. Sus características son:</p>
+<ul>
+<li>Enrutamiento muy rápido</li>
+<li>Altamente portable</li>
+<li>Formato simple de datos que facilita la importación personalizada de conjuntos de datos en lugar de datos de OpenStreetMap o la importación de datos de tráfico</li>
+<li>Perfiles flexibles de enrutamiento (p.ej., para varios medios de transporte)</li>
+<li>Interpreta las restricciones de giro, incluyendo las restricciones condicionales basadas en el tiempo</li>
+<li>Interpreta los carriles de giro</li>
+<li>Instrucciones de conducción localizadas por OSRM</li>
+</ul>
+</div>
+<div id="servicios-y-aplicaciones-que-usan-osrm" class="section level2">
+<h2>Servicios y aplicaciones que usan OSRM</h2>
+<ul>
+<li>ES:<a href="https://wiki.openstreetmap.org/wiki/ES:Cycle.travel">Cycle.travel – direcciones en bicicleta</a></li>
+<li><a href="https://wiki.openstreetmap.org/wiki/MAPS.ME">Maps.Me</a> – direcciones y mapas móviles fuera de línea</li>
+<li>Las <strong>API</strong> asociadas a OSRM son usadas por varios servicios webs, tales como <a href="https://wiki.openstreetmap.org/wiki/RunKeeper">RunKeeper</a>
+<ul>
+<li><a href="https://github.com/mapbox/mapbox-directions-swift">MapboxDirections.swift</a> en las plataformas de Apple como iOS</li>
+<li><a href="https://github.com/mapbox/mapbox-directions-swift">Mapbox Servicios</a> de Java en Java SE y Android</li>
+<li><a href="https://github.com/mapbox/mapbox-directions-swift">Mapbox JavaScript</a> SDK en el navegador y Node.js</li>
+<li><a href="https://www.mapbox.com/unity/">Mapbox Unity SDK</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="implementación-de-docker" class="section level1">
+<h1>Implementación de Docker</h1>
+<p>Como siempre en estos temas, Google Maps fue uno de los pioneros a proponer un servicio eficiente de gran escala. Sus datos y su servicio son relacionados a una política comercial y propietaria. Igualmente, en otros competidores: Bing Maps, Yahoo Maps, ArcGis, etc.</p>
+<p>Buscábamos un sistema que funcione independiente y gratis, así que hemos elegido OSRM (Open Source Routing Machine), que es basado sobre los datos de OpenStreetMap (OSM). No es la única solución que existe para calcular itinerarios, pero es muy sencillo de implementar y sobre todo es muy potente. La página oficial del proyecto puede ser visitada aquí <a href="http://project-osrm.org/">http://project-osrm.org/</a></p>
+<p>Creado por Dennis Luxen del Instituto Tecnológico de Karlsruhe, OSRM (<span class="citation">Giraud (2020)</span>) es programado mayormente en C++ y compatible con la mayoría de los sistemas operativos (Linux, FreeBSD, Windows, Mac).</p>
+<p>El <em>OSRM</em> está basado sobre datos viales y de la calidad de estos datos va a depender la calidad del resultado. Como siempre en los datos espaciales, dos puntos son importantes, la geometría y los atributos. La geometría es lo más obvio de entender porque es visual y se comprende perfectamente sí una calle no está presente en nuestra base de datos, nuestro algoritmo no podrá darnos una ruta que pase por ella. En cuanto a los atributos su rol es diferente pero su importancia es igual. En efecto, una base de datos que contiene informaciones (es decir campos) sobre el sentido del tráfico, la velocidad máxima autorizada o el número de carriles ofrecerá mucho más potencial que una que contiene únicamente la geometría y el nombre de las vías.</p>
+<p>La ventaja de los datos abiertos va adelante de la cuestión del precio (aunque no es despreciable cuando se sabe el costo importante de una base de datos vial propietaria), pero también con la filosofía de tener la libertad de modificar dichos códigos en caso que sea necesario, la opción siempre está abierta. El modelo OSM funciona perfectamente (hay que ver la cantidad y calidad de datos en Europa y EE. UU), la mejor prueba de eso fue de Map Maker de parte de Google que permite a los usuarios editar (agregar, suprimir, modificar), ahora en base a los datos de Google Maps. La diferencia es que estos datos creados por el usuario son propiedad de Google y no de él, ni de una comunidad.</p>
+<div id="docker-en-ubuntu-20.04" class="section level2">
+<h2>Docker en Ubuntu 20.04</h2>
+<p>Primero debemos hacer la instalación del software Docker sobre nuestro sistema, utilizando para estos efectos el terminal del sistema Linux Ubuntu. Al cual, mediante dicho terminal, podemos hacer la instalación de Docker. Los pasos y el proceso considera las siguientes etapas.</p>
+<div id="instalación-y-puesta-en-marcha" class="section level3">
+<h3>Instalación y puesta en marcha</h3>
+<p>Para instalar el motor de Docker, necesitamos una versión de 64-bit de Ubuntu, en nuestro caso Ubuntu 20.04. El motor de Docker es soportado en arquitecturas x86_64 (o amd64), armhf, y arm64. En este caso instalamos usando el repositorio.</p>
+<p>Antes de instalar el motor de Docker por la primera vez en nuestro equipo hospedador, debemos definir el repositorio de Docker. Después, podemos instalar y actualizar Docker desde el repositorio.</p>
+<div id="definiendo-el-repositorio" class="section level4">
+<h4><strong>Definiendo el repositorio</strong></h4>
+<pre><code>+ Actualiza el paquete apt indice e instalamos los paquetes para permitir apt el uso del repositorio sobre HTTPS:</code></pre>
+<pre class="bash"><code>$ sudo apt-get update
+
+$ sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common</code></pre>
+</div>
+<div id="agregando-la-llave-gpg-oficial-de-docker" class="section level4">
+<h4><strong>Agregando la llave GPG oficial de Docker</strong></h4>
+<pre class="bash"><code>$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</code></pre>
+<p>Verificamos que ahora tenemos la llave con la huella 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88, mediante la verificación que coincidan los últimos 8 digitos.</p>
+<pre class="bash"><code>$ sudo apt-key fingerprint 0EBFCD88
+
+pub   rsa4096 2017-02-22 [SCEA]
+      9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
+uid   [unknown] Docker Release (CE deb) &lt;docker@docker.com&gt;
+sub   rsa4096 2017-02-22 [S]</code></pre>
+</div>
+<div id="instalando-el-motor-docker" class="section level4">
+<h4><strong>Instalando el motor Docker</strong></h4>
+<ul>
+<li>Actualizamos las librerías de Ubuntu, e instalamos la última versión del motor Docker.</li>
+</ul>
+<pre class="bash"><code> $ sudo apt-get update
+ $ sudo apt-get install docker-ce docker-ce-cli containerd.io</code></pre>
+</div>
+<div id="verificación-de-la-instalación" class="section level4">
+<h4><strong>Verificación de la instalación</strong></h4>
+<ul>
+<li>Con el siguiente comando, verificamos que resulta la palabra “Hello-World.”</li>
+</ul>
+<pre class="bash"><code>$ sudo docker run hello-world</code></pre>
+<p>Este comando descarga una imagen de prueba y la ejecuta en un contenedor. Cuando el contenedor se ejecuta, este imprime el mensaje informal y termina.</p>
+<p>El motor de Docker está instalado y corriendo. El grupo docker es creado pero no hay incorporación de usuarios. Debemos usar el comando <strong>sudo</strong> para ejecutar Docker. Continuamos con la instación desde Linux para permitir que los usuarios sin privilegios ejecuten comandos de Docker y para otros pasos de configuración opcionales.</p>
+</div>
+</div>
+</div>
+<div id="osrm-para-mapas-de-chile" class="section level2">
+<h2><em>OSRM</em> para mapas de Chile</h2>
+<p>En esta etapa debemos dirigirnos al sitio web de <a href="https://github.com/Project-OSRM/osrm-backend">Github del proyecto <em>OSRM</em></a>. Luego usando el terminal de Ubuntu debemos seguir los pasos.</p>
+<div id="usando-docker" class="section level3">
+<h3>Usando Docker</h3>
+<p>Utilizamos las imagenes de <em>OSRM</em> de Docker (backend, frontend) en Debian y nos aseguramos de que sean lo más ligeras posible.</p>
+<p>Descargamos los mapas de Chile desde OpenStreetMap, por ejemplo, de Geofabrik. Este mapa es actualizado regularmente con la información aportada por la comunidad chilena y que alimenta de información geoespacial estas bases de datos.</p>
+<pre class="bash"><code>wget http://download.geofabrik.de/south-america/chile-latest.osm.pbf
+</code></pre>
+<p>Pre-procesamos el extracto con el perfil e inicializamos un servidor HTTP del motor de enrutamiento en el puerto 5000 con el siguiente comando de Docker.</p>
+<pre class="bash"><code>docker run -t -v &quot;${PWD}:/data&quot; osrm/osrm-backend osrm-extract -p /opt/car.lua /data/chile-latest.osm.pbf</code></pre>
+<p>La marca -v crea el directorio “/data” adentro del contenedor de Docker y lo hace disponible ahí. El archivo “/data/chile-latest.osm.pbf” dentro del contenedor es referenciado en “/chile-latest.osm.pbf” en el servidor.</p>
+<p>Ejecutamos:</p>
+<pre class="bash"><code>docker run -t -v &quot;${PWD}:/data&quot; osrm/osrm-backend osrm-partition /data/chile-latest.osrm
+docker run -t -v &quot;${PWD}:/data&quot; osrm/osrm-backend osrm-customize /data/chile-latest.osrm</code></pre>
+<p>Note que <em>chile-latest.osrm</em> tiene una extensión de archivo diferente.</p>
+<pre class="bash"><code>docker run -t -i -p 5000:5000 -v &quot;${PWD}:/data&quot; osrm/osrm-backend osrm-routed --algorithm mld /data/chile-latest.osrm</code></pre>
+</div>
+<div id="hacemos-las-consultas-en-el-servidor-http" class="section level3">
+<h3>Hacemos las consultas en el servidor HTTP</h3>
+<p>Una vez el servidor <em>OSRM</em> esta activo y funcionando para recibir consultas de rutas. Este es posible usarme mediante la librería de R llamada OSRM. En este caso, consideraremos algunos puntos georefenciados en torno a la ciudad de Santiago, las que serviran como un ejemplo del uso del <em>OSRM</em>.</p>
+<p>En esta etapa cargamos las librerías, se definen dos direcciones de INE y museos en Santiago, para luego obtener mediante OSM las coordenadas geográficas y luego construir un dataframe con dicha información.</p>
+<pre class="r"><code>#Ejecución de las librerías
+library(tmaptools)
+library(leaflet)
+library(osrm)
+
+# Listado de direcciones para geolocalizar
+museos&lt;-c(&quot;Morande 801, Santiago, Santiago&quot;,
+         &quot;Paseo Bulnes 418, Santiago&quot;,
+         &quot;José Miguel de La Barra 650, Santiago&quot;,
+         &quot;Matucana 501, Santiago&quot;,
+         &quot;Portales 3530, Santiago, Estación Central, Región Metropolitana&quot;,
+         &quot;Av Vicuña Mackenna 37, Santiago, Región Metropolitana&quot;,
+         &quot;Plaza de Armas 951, Santiago, Región Metropolitana&quot;,
+         &quot;José Victorino Lastarria 307, Santiago, Región Metropolitana&quot;,
+         &quot;Av. República 475, Santiago, Región Metropolitana&quot;,
+         &quot;Fernando Márquez de La Plata 0192, Providencia, Región Metropolitana&quot;)
+
+# Con esta función hacemos la consulta directo a Open Street Maps
+# geodato&lt;-geocode_OSM(museos)
+
+# Con el fin de no sobrecargar el servidor OSM por unica vez hacemos la consulta
+# Luego, guardamos un archivo rds para luego utilizarlo.
+
+geodato&lt;- readRDS(&quot;geodatos.RDS&quot;)
+
+# Seleccionamos la dirección y la referencia espacial.
+locs&lt;-data.frame(id=geodato$query, lat=geodato$lat, lon=geodato$lon)</code></pre>
+<p>Primera visualización de los datos en el espacio.</p>
+<pre class="r"><code>library(htmlwidgets)
+library(webshot)
+library(leaflet)
+# Visualizamos en el espacio la ubicación de los museos
+m&lt;-leaflet(data = locs) %&gt;% addTiles() %&gt;%
+  addMarkers(~lon, ~lat, popup = ~as.character(id), label = ~as.character(id))
+
+m</code></pre>
+<div class="figure">
+<div id="htmlwidget-52a1f4ca7227851bfdc0" style="width:672px;height:576px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-52a1f4ca7227851bfdc0">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[-33.4344862,-33.4482113,-33.4365059,-33.4397436,-33.44675835,-33.43895845,-33.4371983081633,-33.4376552,-33.4481779,-33.4310946],[-70.654323,-70.65288288451,-70.6435145,-70.6794048484807,-70.6855956114685,-70.635466487735,-70.6506387632653,-70.640934,-70.6684162,-70.6349355],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},["Morande 801, Santiago, Santiago","Paseo Bulnes 418, Santiago","José Miguel de La Barra 650, Santiago","Matucana 501, Santiago","Portales 3530, Santiago, Estación Central, Región Metropolitana","Av Vicuña Mackenna 37, Santiago, Región Metropolitana","Plaza de Armas 951, Santiago, Región Metropolitana","José Victorino Lastarria 307, Santiago, Región Metropolitana","Av. República 475, Santiago, Región Metropolitana"," Fernando Márquez de La Plata 0192, Providencia, Región Metropolitana"],null,null,null,["Morande 801, Santiago, Santiago","Paseo Bulnes 418, Santiago","José Miguel de La Barra 650, Santiago","Matucana 501, Santiago","Portales 3530, Santiago, Estación Central, Región Metropolitana","Av Vicuña Mackenna 37, Santiago, Región Metropolitana","Plaza de Armas 951, Santiago, Región Metropolitana","José Victorino Lastarria 307, Santiago, Región Metropolitana","Av. República 475, Santiago, Región Metropolitana"," Fernando Márquez de La Plata 0192, Providencia, Región Metropolitana"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-33.4482113,-33.4310946],"lng":[-70.6855956114685,-70.6349355]}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+ Mapa de los puntos sin optimizar
+</p>
+</div>
+<p>En la Figura  visualizamos mediante la librería <strong>leaflet</strong> los puntos en el espacio. Esta función crea un widget de mapa utilizando htmlwidgets. El widget se puede representar en páginas HTML generadas a partir de R Markdown, Shiny u otras aplicaciones.</p>
+<p>Mediante el uso de la librería <strong>sf</strong> construimos un objeto tipo dataframe con atributos espaciales. En su forma más básica, un objeto <strong>sf</strong> es una colección de características simples que incluye atributos y geometrías en forma de dataframe. En otras palabras, es un dataframe (o tibble) con filas de entidades, columnas de atributos y una columna de geometría especial que contiene los aspectos espaciales de las entidades. Este formato es necesario para usar en <em>OSRM</em>.</p>
+<pre class="r"><code># Se construye un objeto espacial de los 10 museos
+library(sf)
+locs &lt;- structure(
+  list(id=geodato$query,lon = geodato$lon,  lat = geodato$lat), 
+  class = &quot;data.frame&quot;, row.names = c(NA, -10L))</code></pre>
+<p>Mediante la función <strong>osrmRoute</strong> hacemos una ruta sin orden, ni optimizada con el fin de evidenciar que el uso de <em>OSRM</em> no genera ningú tipo de optimización de rutas.</p>
+<pre class="r"><code># Se estima una ruta entre los museos usando la función osrmRoute
+ruta1 &lt;- osrmRoute(loc = locs, returnclass = &quot;sf&quot;)
+plot(st_geometry(ruta1), col = &quot;red&quot;, lwd = 2)
+points(locs[,2:3], pch = 20, cex = 3)
+text(locs[,2:3],as.character(row.names(geodato)), cex = .8, col=&quot;grey&quot;)</code></pre>
+<div class="figure">
+<img src="index_SP_files/figure-html/figBBB-1.png" alt="\label{fig:figBBB} Ruta entre los museos sin optimizar" width="672" />
+<p class="caption">
+ Ruta entre los museos sin optimizar
+</p>
+</div>
+<p>En la Figura  es necesario mencionar que esta ruta no tiene ningun tipo de optimización, pues solamente mostramos el funcionamiento del <em>OSRM</em>, en este caso no hay ordenamiento.</p>
+<p>Relizamos la visualización para un mapa interactivo visible en HTML.</p>
+<pre class="r"><code>library(htmlwidgets)
+library(webshot)
+
+# Misma visualización, pero en mapa interactivo.
+m&lt;-leaflet(data = sf::st_geometry(ruta1)) %&gt;% 
+  setView(lng = mean(locs$lon), lat =mean(locs$lat), zoom = 14) %&gt;%
+  addTiles() %&gt;% 
+  addMarkers(lng = locs$lon, lat = locs$lat, popup = locs$id) %&gt;%
+  addPolylines()
+m</code></pre>
+<div class="figure">
+<div id="htmlwidget-c42a1faa40afb1f98475" style="width:672px;height:576px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c42a1faa40afb1f98475">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"setView":[[-33.4398789808163,-70.654611179546],14,[]],"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[-33.4344862,-33.4482113,-33.4365059,-33.4397436,-33.44675835,-33.43895845,-33.4371983081633,-33.4376552,-33.4481779,-33.4310946],[-70.654323,-70.65288288451,-70.6435145,-70.6794048484807,-70.6855956114685,-70.635466487735,-70.6506387632653,-70.640934,-70.6684162,-70.6349355],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},["Morande 801, Santiago, Santiago","Paseo Bulnes 418, Santiago","José Miguel de La Barra 650, Santiago","Matucana 501, Santiago","Portales 3530, Santiago, Estación Central, Región Metropolitana","Av Vicuña Mackenna 37, Santiago, Región Metropolitana","Plaza de Armas 951, Santiago, Región Metropolitana","José Victorino Lastarria 307, Santiago, Región Metropolitana","Av. República 475, Santiago, Región Metropolitana"," Fernando Márquez de La Plata 0192, Providencia, Región Metropolitana"],null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPolylines","args":[[[[{"lng":[-70.6543273925781,-70.653564453125,-70.6534271240234,-70.6558151245117,-70.6534271240234,-70.6527557373047,-70.6521301269531,-70.6529006958008,-70.6437606811523,-70.6412658691406,-70.6423263549805,-70.6426544189453,-70.6432418823242,-70.64013671875,-70.6435089111328,-70.6787719726562,-70.6790161132812,-70.6801376342773,-70.6799468994141,-70.6796569824219,-70.6835098266602,-70.6837844848633,-70.6858749389648,-70.6860885620117,-70.6856155395508,-70.6860885620117,-70.6858749389648,-70.6837844848633,-70.6835098266602,-70.6793746948242,-70.6665115356445,-70.6489562988281,-70.6446914672852,-70.6447677612305,-70.643798828125,-70.6387405395508,-70.6338119506836,-70.6349411010742,-70.635627746582,-70.6361770629883,-70.6352996826172,-70.6344757080078,-70.6353302001953,-70.6405944824219,-70.6435165405273,-70.6506271362305,-70.6555252075195,-70.654914855957,-70.6446914672852,-70.6447677612305,-70.6440277099609,-70.6412658691406,-70.6422958374023,-70.6423645019531,-70.6411361694336,-70.6411056518555,-70.6426544189453,-70.6434097290039,-70.6447372436523,-70.644660949707,-70.6478805541992,-70.6476364135742,-70.6656188964844,-70.6703948974609,-70.6704406738281,-70.6684188842773,-70.6563491821289,-70.6430511474609,-70.6370849609375,-70.6340789794922,-70.63427734375,-70.6353302001953,-70.6360397338867,-70.6349868774414,-70.6349411010742],"lat":[-33.4343681335449,-33.4343490600586,-33.4353103637695,-33.4356002807617,-33.448860168457,-33.4487075805664,-33.4485206604004,-33.4446105957031,-33.4422874450684,-33.4427680969238,-33.4405899047852,-33.438419342041,-33.4377098083496,-33.4368896484375,-33.4365081787109,-33.4402275085449,-33.4373397827148,-33.4374198913574,-33.4397773742676,-33.4437599182129,-33.4440803527832,-33.4478988647461,-33.4477882385254,-33.4470596313477,-33.4470405578613,-33.4470596313477,-33.4477882385254,-33.4478988647461,-33.4440803527832,-33.4440002441406,-33.4423179626465,-33.4406089782715,-33.440299987793,-33.4410705566406,-33.4423789978027,-33.4432373046875,-33.4418296813965,-33.4383773803711,-33.438591003418,-33.4389495849609,-33.4404106140137,-33.4401092529297,-33.4368286132812,-33.4368591308594,-33.4365081787109,-33.4372673034668,-33.4378089904785,-33.4411697387695,-33.440299987793,-33.4410705566406,-33.4422492980957,-33.4427680969238,-33.4406585693359,-33.4395599365234,-33.4390182495117,-33.4378509521484,-33.438419342041,-33.4379806518555,-33.4405403137207,-33.4413108825684,-33.4417190551758,-33.4430809020996,-33.4471473693848,-33.4484596252441,-33.44873046875,-33.4481773376465,-33.4455299377441,-33.4419593811035,-33.4379081726074,-33.4371185302734,-33.4366302490234,-33.4368286132812,-33.4321708679199,-33.4320297241211,-33.4310874938965]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"#03F","weight":5,"opacity":0.5,"fill":false,"fillColor":"#03F","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-33.448860168457,-33.4310874938965],"lng":[-70.6860885620117,-70.6338119506836]}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+ Mapa de los puntos sin optimizar
+</p>
+</div>
+<p>En la Figura , es evidente que la visualización interactiva mediante <strong>leaflet</strong> es una gran ventaja, (aunque en este documento en pdf no se aprecia) ya que nos permite construir un archivo final html facil de automatizar y al mismo tiempo, conveniente para compartir y visualizar, pudiendo estos ser utilizados desde equipos móviles.</p>
+</div>
+</div>
+</div>
+<div id="algoritmo-génetico-sobre-osrm" class="section level1">
+<h1>Algoritmo Génetico sobre <em>OSRM</em></h1>
+<p>Una vez que definimos que usaremos las ventajas resolutivas mediante AG, el proceso matématico que nos permitirá la construcción de la solución, nos queda hacer la implementación.</p>
+<p>Al objeto <strong>geodato</strong> se le agrega un identificador con ID y nombres en caso que existan, para efecto de este ejercicio vamos a considerar ID y nombres como equivalentes. Se construye la matriz de distancias mediante la función <strong>osrmTable</strong> de la librería <strong>OSRM</strong>, luego se transforma a un objeto <strong>dist</strong> de R, para luego agregar los nombres en dicha matriz de distancias.</p>
+<pre class="r"><code>#Creamos el identificador de los puntos
+geodato$ID&lt;-1:10
+nombres&lt;-1:10
+
+# Construimos la matriz de distancias considerando
+# el sentido de las calles mediante la función osrmTable
+ma_dist &lt;- osrmTable(loc = geodato[1:10, c(&quot;ID&quot;,&quot;lon&quot;,&quot;lat&quot;)])
+
+# Lo llevamos a un objeto dist de R y nombramos los puntos
+bd&lt;-as.dist(ma_dist$durations)
+bd&lt;-usedist::dist_setNames(bd, nombres)</code></pre>
+<p>Se carga la libreria <strong>GA</strong> para resolver el orden del tour. Se crea una semilla y luego se transforma dicha matriz de distancia en un objetivo tipo matrix de R. Se crean además, la función que medirá el largo del tour, la función de ajuste, la función del tour, las coordenadas mediante un escalamiento multidimensional, el número de iteraciones con la matriz correspondiente.</p>
+<pre class="r"><code># Cargamos la librería del Algoritmo Genético
+library(GA)
+
+# Definimos la semilla aleatoria y lo llevamos a una matriz
+set.seed(123)
+D &lt;- as.matrix(bd)
+
+# dado un tour, calculamos la distancia total
+tourLength &lt;- function(tour, distMatrix) {
+  tour &lt;- c(tour, tour[1])
+  route &lt;- embed(tour, 2)[, 2:1]
+  sum(distMatrix[route])
+}
+
+# la inversa de la distancia total es el ajuste
+tpsFitness &lt;- function(tour, ...) 1/tourLength(tour, ...)
+
+# Creamos la funcion del tour
+getAdj &lt;- function(tour) {
+  n &lt;- length(tour)
+  from &lt;- tour[1:(n - 1)]
+  to &lt;- tour[2:n]
+  m &lt;- n - 1
+  A &lt;- matrix(0, m, m)
+  A[cbind(from, to)] &lt;- 1
+  A &lt;- A + t(A)
+  return(A)
+}
+
+# coordenadas en 2-d mediante escalamiento multidimensional
+mds &lt;- cmdscale(bd)
+x &lt;- mds[, 1]
+y &lt;- -mds[, 2]
+n &lt;- length(x)
+
+# Definimos el número de iteraciones
+B &lt;- 100
+fitnessMat &lt;- matrix(0, B, 2)
+A &lt;- matrix(0, n, n)</code></pre>
+<p>Compilamos los resultados del total de iteraciones para luego identificar la ruta mas ajustada. Además se agrega un medidor del tiempo total del proceso.</p>
+<pre class="r"><code>inicio1&lt;-Sys.time()
+
+for (b in seq(1, B)) {
+  # ejecuta el AG
+  AG.rep &lt;- ga(type = &quot;permutation&quot;, fitness = tpsFitness, distMatrix = D, 
+               min = 1, max = attr(bd, &quot;Size&quot;), popSize = 10, maxiter = 50,
+               run = 100, pmutation = 0.2, monitor = NULL)
+  
+  tour &lt;- AG.rep@solution[1, ]
+  tour &lt;- c(tour, tour[1])
+  fitnessMat[b, 1] &lt;- AG.rep@best[AG.rep@iter]
+  fitnessMat[b, 2] &lt;- AG.rep@mean[AG.rep@iter]
+  A &lt;- A + getAdj(tour)
+}
+
+final1&lt;-Sys.time()
+(final1-inicio1)</code></pre>
+<pre><code>## Time difference of 9.096600056 secs</code></pre>
+<p>Se construye una función para visualizar el orden del tour en matriz de distancias.</p>
+<pre class="r"><code>plot.tour &lt;- function(x, y, A) {
+  n &lt;- nrow(A)
+  for (ii in seq(2, n)) {
+    for (jj in seq(1, ii)) {
+      w &lt;- A[ii, jj]
+      if (w &gt; 0) 
+        lines(x[c(ii, jj)], y[c(ii, jj)], lwd = w, col = &quot;lightgray&quot;)
+    }
+  }
+}</code></pre>
+<pre class="r"><code># Graficamos los puntos y la ruta ajusta entre ellos
+plot(x, y, type = &quot;n&quot;, asp = 1, xlab = &quot;&quot;, ylab = &quot;&quot;, main = &quot;Tour ordenado&quot;)
+points(x, y, pch = 16, cex = 1, col = &quot;blue3&quot;)
+abline(h = pretty(range(x), 10), v = pretty(range(y), 10), col = &quot;lightgrey&quot;)
+tour &lt;- AG.rep@solution[1, ]
+#tour &lt;- ruta[-11,1]
+tour &lt;- c(tour, tour[1])
+n &lt;- length(tour)
+arrows(x[tour[-n]], y[tour[-n]], x[tour[-1]], y[tour[-1]],
+       length = 0.15, angle = 45, col = &quot;green4&quot;, lwd = 2)
+text(x+0.2, y+0.3 , nombres, cex = 1)</code></pre>
+<div class="figure">
+<img src="index_SP_files/figure-html/figA-1.png" alt="\label{fig:figA} gráfico de los puntos y la mejor ruta que se ajusta entre los puntos" width="672" />
+<p class="caption">
+ gráfico de los puntos y la mejor ruta que se ajusta entre los puntos
+</p>
+</div>
+<p>En la Figura , se visualiza el tour ordenado para un recolector de datos en terreno. Este tour esta construido en base a la matriz de distancias.</p>
+<pre class="r"><code># Resumen de la progresión del AG
+summary(AG.rep)</code></pre>
+<pre><code>## $type
+## [1] &quot;permutation&quot;
+## 
+## $popSize
+## [1] 10
+## 
+## $maxiter
+## [1] 50
+## 
+## $elistism
+## [1] 1
+## 
+## $pcrossover
+## [1] 0.8
+## 
+## $pmutation
+## [1] 0.2
+## 
+## $domain
+## NULL
+## 
+## $suggestions
+## NULL
+## 
+## $iter
+## [1] 50
+## 
+## $fitness
+## [1] 0.03401360544
+## 
+## $solution
+##      x1 x2 x3 x4 x5 x6 x7 x8 x9 x10
+## [1,]  9  5  4  7  1  3 10  8  6   2
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;summary.ga&quot;</code></pre>
+<pre class="r"><code>plot(AG.rep, main = &quot;progresión de AG&quot;)
+points(rep(30, B), fitnessMat[, 1], pch = 16, col = &quot;lightgrey&quot;)
+points(rep(35, B), fitnessMat[, 2], pch = 17, col = &quot;black&quot;)
+title(main = &quot;50 primeras iteraciones sobre el total de 100 simulaciones
+      (mejor y promedio)&quot;)</code></pre>
+<div class="figure">
+<img src="index_SP_files/figure-html/figB-1.png" alt="\label{fig:figB} 50 primeras iteraciones sobre el total de 100 simulations (mejor y promedio)" width="672" />
+<p class="caption">
+ 50 primeras iteraciones sobre el total de 100 simulations (mejor y promedio)
+</p>
+</div>
+<p>En la Figura , visualizamos las 50 primeras iteraciones. El gráfico describle el valor del <em>fitness</em> o ajuste de la función del algoritmo genético en función del número de generaciones. En este caso hicimos un total de 100 simulaciones. Es importante notar que cuando construimos el objeto <strong>AG.rep</strong> mediante funcion <strong>ga</strong> se utilizo el argumento <strong>maxiter=50</strong>, con el fin de definir el número total de iteraciones para cada algoritmo genético. Por lo tanto, aquí se muestra el promedio y la mejor de esas 100 simulaciones, los que tienden a converger entre la generación 30 y 40. Este proceso es el que le confiere una conducta de aprendizaje a esta solución.</p>
+<pre class="r"><code>plot(x, y, type = &quot;n&quot;, asp = 1, xlab = &quot;&quot;, ylab = &quot;&quot;,
+main = &quot;Ruta final seleccionada
+     (100 simulaciones)&quot;)
+plot.tour(x, y, A * 10/max(A))
+points(x, y, pch = 16, cex = 1.5, col = &quot;blue&quot;)
+text(x, y, nombres, cex = 1)
+lines(x[tour], y[tour], col = &quot;red&quot;, lwd = 1)</code></pre>
+<div class="figure">
+<img src="index_SP_files/figure-html/figC-1.png" alt="\label{fig:figC} Gráfico del resultado de la mejor ruta" width="672" />
+<p class="caption">
+ Gráfico del resultado de la mejor ruta
+</p>
+</div>
+<p>En la Figura , visualizamos en rojo la ruta final seleccionada. En este gráfico es posible visualizar en color gris representa la proporción de los recorridos probados en el total de 100 simulaciones. Por lo tanto, el ancho del trayecto entre los puntos indica que tan eficiente fue esa ruta.</p>
+<p>En esta etapa obtenemos la solución y la comparamos con la solución del tour con el fin de validar los resultados. Por lo tanto, ambas deben tener el mismo orden.</p>
+<pre class="r"><code># Construccion del vector resultante
+nombres_ordenados&lt;-summary(AG.rep)$solution
+
+#ordenamiento del vector
+
+for (i in 1:length(tour[-11])){
+  nombres_ordenados[i] &lt;- print(nombres[tour[-11][i]])
+}</code></pre>
+<pre><code>## [1] 9
+## [1] 5
+## [1] 4
+## [1] 7
+## [1] 1
+## [1] 3
+## [1] 10
+## [1] 8
+## [1] 6
+## [1] 2</code></pre>
+<pre class="r"><code># creación del data frame y verificación
+posiciones&lt;-data.frame(tour=tour[-11], ID=as.numeric(nombres_ordenados))
+
+# ordenamiento de los puntos de entrada
+library(dplyr)
+options(digits=10)
+bd3&lt;-left_join(posiciones, geodato, by=&quot;ID&quot;)</code></pre>
+<p>En esta etapa cargamos la libreria <strong>osrm</strong> para luego hacer la conexión con el servidor osrm donde hemos implementado el motor de rutas (<em>OSRM</em>) mediante Docker.</p>
+<pre class="r"><code># carga de la librería osrm
+library(osrm)
+#options(osrm.server = &quot;http://127.0.0.1:5000/&quot;)
+locs &lt;- structure(
+  list(id=bd3$ID,lon = bd3$lon, 
+       lat = bd3$lat), 
+  class = &quot;data.frame&quot;, row.names = c(NA, -10L))</code></pre>
+<p>Nuevamente se estima una ruta entre los puntos espacialmente usando la función <strong>osrmRoute</strong> del motor de rutas. En este caso, el ordenamiento entregado esta definido por el proceso de optimización previamente ejecutado.</p>
+<pre class="r"><code>ruta1 &lt;- osrmRoute(loc = locs, returnclass = &quot;sf&quot;)
+plot(st_geometry(ruta1), col = &quot;red&quot;, lwd = 2)
+points(locs[,2:3], pch = 20, cex = 3)
+text(locs[,2:3],as.character(row.names(geodato)), cex = .8, col=&quot;grey&quot;)</code></pre>
+<div class="figure">
+<img src="index_SP_files/figure-html/figD-1.png" alt="\label{fig:figD} Ruta entre los museos con la optimización AG" width="672" />
+<p class="caption">
+ Ruta entre los museos con la optimización AG
+</p>
+</div>
+<p>En la Figura  la ruta optimimizada muestra el recorrido por las calles usando OSRM, pero sin mostrar el contexto.</p>
+<pre class="r"><code>## load packages
+library(leaflet)
+library(htmlwidgets)
+library(webshot)
+
+## creamos el mapa con la ruta
+m &lt;- leaflet(data = sf::st_geometry(ruta1)) %&gt;% 
+  setView(lng = mean(locs$lon), lat =mean(locs$lat), zoom = 14) %&gt;%
+  addTiles() %&gt;% 
+  addMarkers(lng = locs$lon, lat = locs$lat, popup = locs$id) %&gt;%
+  addPolylines()
+
+m</code></pre>
+<div class="figure">
+<div id="htmlwidget-fa319d6fb574c2f1fe8f" style="width:672px;height:576px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-fa319d6fb574c2f1fe8f">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"setView":[[-33.4398789808163,-70.654611179546],14,[]],"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[-33.4481779,-33.44675835,-33.4397436,-33.4371983081633,-33.4344862,-33.4365059,-33.4310946,-33.4376552,-33.43895845,-33.4482113],[-70.6684162,-70.6855956114685,-70.6794048484807,-70.6506387632653,-70.654323,-70.6435145,-70.6349355,-70.640934,-70.635466487735,-70.65288288451],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},[9,5,4,7,1,3,10,8,6,2],null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPolylines","args":[[[[{"lng":[-70.6684188842773,-70.6673278808594,-70.6803970336914,-70.6826019287109,-70.6827697753906,-70.6838989257812,-70.6837844848633,-70.6858749389648,-70.6860885620117,-70.6856155395508,-70.6860885620117,-70.6858749389648,-70.6837844848633,-70.6835098266602,-70.6795272827148,-70.6799468994141,-70.6802597045898,-70.6746215820312,-70.6600646972656,-70.660270690918,-70.6518859863281,-70.6490097045898,-70.6485366821289,-70.6506271362305,-70.6540145874023,-70.6543273925781,-70.6504364013672,-70.6504211425781,-70.6467361450195,-70.6433410644531,-70.6406860351562,-70.6405944824219,-70.6435089111328,-70.6443710327148,-70.6444702148438,-70.643180847168,-70.6426696777344,-70.6353912353516,-70.6360397338867,-70.6349868774414,-70.6351165771484,-70.6344604492188,-70.6349411010742,-70.6362915039062,-70.6364669799805,-70.6379013061523,-70.6387176513672,-70.6386795043945,-70.6393356323242,-70.6388854980469,-70.6389389038086,-70.6393814086914,-70.6410751342773,-70.6411056518555,-70.6426544189453,-70.6432418823242,-70.6398468017578,-70.6367874145508,-70.6359100341797,-70.6352996826172,-70.6344757080078,-70.6345520019531,-70.6349411010742,-70.635627746582,-70.6361770629883,-70.6359100341797,-70.635368347168,-70.6344757080078,-70.633544921875,-70.6370162963867,-70.6404571533203,-70.6421508789062,-70.645149230957,-70.6535949707031,-70.6534271240234,-70.6527557373047],"lat":[-33.4481773376465,-33.4477577209473,-33.451057434082,-33.4509887695312,-33.4494895935059,-33.4494705200195,-33.4478988647461,-33.4477882385254,-33.4470596313477,-33.4470405578613,-33.4470596313477,-33.4477882385254,-33.4478988647461,-33.4440803527832,-33.4439697265625,-33.4397773742676,-33.435848236084,-33.4351272583008,-33.4345588684082,-33.4333076477051,-33.4330902099609,-33.4338493347168,-33.4370498657227,-33.4372673034668,-33.4376602172852,-33.4343681335449,-33.4342308044434,-33.4334487915039,-33.4344291687012,-33.4360008239746,-33.4365882873535,-33.4368591308594,-33.4365081787109,-33.4365997314453,-33.435489654541,-33.4360275268555,-33.4340209960938,-33.4356994628906,-33.4321708679199,-33.4320297241211,-33.4311981201172,-33.4312286376953,-33.4310874938965,-33.4308776855469,-33.4304695129395,-33.4296188354492,-33.4328880310059,-33.4347801208496,-33.4368782043457,-33.4368782043457,-33.4377174377441,-33.4382476806641,-33.4382286071777,-33.4378509521484,-33.438419342041,-33.4377098083496,-33.4368896484375,-33.436897277832,-33.4397392272949,-33.4404106140137,-33.4401092529297,-33.4395179748535,-33.4383773803711,-33.438591003418,-33.4387588500977,-33.4397392272949,-33.4404106140137,-33.4401092529297,-33.4433288574219,-33.4445991516113,-33.4453010559082,-33.4460678100586,-33.4462585449219,-33.4477500915527,-33.448860168457,-33.4487075805664]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"#03F","weight":5,"opacity":0.5,"fill":false,"fillColor":"#03F","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-33.451057434082,-33.4296188354492],"lng":[-70.6860885620117,-70.633544921875]}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+ Mapa de los puntos optimizados y con una ruta real gracias al <strong>OSRM</strong>
+</p>
+</div>
+<p>En la Figura  la ruta optimimizada muestra el recorrido por las calles usando OSRM, pero mostrando el contexto en un plano interactivo en html. Sin embargo, para efectos de este documento en pdf, dicha interacción no es posible.</p>
+<div style="page-break-after: always;"></div>
+</div>
+<div id="conclusión" class="section level1">
+<h1>Conclusión</h1>
+<p>El proceso descrito y esquematizado en este documento, muestra una solución factible para la creación de rutas para los recolectores de datos del IPC en terreno. Pudimos evidenciar que la batería de herramientas de manejo de datos que existe y en especial, programas y software de código libre son un actor importante a la hora de crear innovación de alta calidad, pero con bajo costo asociado. Es absolutamente factible crear procesos de optimización de rutas con esta herramienta, la que requiere un entrenamiento acotado en el caso de hacer capacitación a equipos de desarrolladores de software.</p>
+<p>Es importante hacer notar que, para este problema, el resultado optimizado cumple con los requisitos de ser una optimización de calidad y tal como se muestra en los hallazgos del informe <strong>“Rutas óptimas para recolectores de IPC”</strong> existe una reducción del 15% en los tiempos de viaje de las rutas que hicieron los recolectores de datos en años previos.</p>
+<p>Este algoritmo funciona bien cuando se trabaja con no más de 50 puntos a recorrer. Sería muy raro que un recolector de datos deba cubrir más de 15 lugares al día durante su jornada laboral. Por lo general, ese recorrido se realiza entre 10 y 15 establecimientos en su tiempo de trabajo. Por lo tanto, para efectos de resolver este problema en estos términos, los resultados son convenientes en la reducción del tiempo total.</p>
+<p>Por otro lado, y en relación a aspectos técnicos del proceso en R, la implementación de Docker y OSRM no nos mostraron grandes dificultades. Si bien estos resultados no son una innovación científica de primera línea, juntar, combinar y sinergizar los procesos que se muestran aquí, lo hace una innovación. No está de más decir que sacamos ventaja de quienes por filosofía ponen a disposición del público el desarrollo de sus trabajos, como el caso del <a href="http://project-osrm.org/">proyecto OSRM</a> u <a href="https://www.openstreetmap.org/">OSM</a>. Herramientas que se hacen parte de un esquema de trabajo colaborativo y benéfico para todas las partes. La comunidad del software libre y de la filosofía del código abierto fomenta este tipo de trabajos.</p>
+<p>Por último, hacer notar que en esta etapa hemos trabajado durante el 2020. Sin embargo, este año 2021 tenemos mucho interés para seguir estudiando y conociendo herramientas que nos permitan empaquetar todo este proceso en un servidor local de la institución, para poder dejar disponible una herramienta que permita resolver consultas de optimización de rutas para la institución y mejorar la recolección de datos en terreno, pero quizás si el proyecto crece en el tiempo también puede ayudar y servir a las necesidades de todas las instituciones del Estado. Principalmente, pensado que esta herramienta no es solo útil para el Instituto Nacional de Estadísticas (INE-Chile), sino que, para los ministerios, municipalidades y en especial, para lograr distribuir con mayor precisión la ayuda social y medicamentos que la población necesita en estos tiempos de contingencia sanitaria.</p>
+</div>
+<div id="bibliografia" class="section level1 unnumbered">
+<h1 class="unnumbered">Bibliografia</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-applegate2003implementing" class="csl-entry">
+Applegate, David, Robert Bixby, Vašek Chvátal, and William Cook. 2003. <span>“Implementing the Dantzig-Fulkerson-Johnson Algorithm for Large Traveling Salesman Problems.”</span> <em>Mathematical Programming</em> 97 (1): 91–153.
+</div>
+<div id="ref-applegate1998solution" class="csl-entry">
+Applegate, David, Robert Bixby, William Cook, and Vasek Chvátal. 1998. <span>“On the Solution of Traveling Salesman Problems.”</span>
+</div>
+<div id="ref-bennett2010openstreetmap" class="csl-entry">
+Bennett, Jonathan. 2010. <em>OpenStreetMap</em>. Packt Publishing Ltd.
+</div>
+<div id="ref-usedist" class="csl-entry">
+Bittinger, Kyle. 2020. <em>Usedist: Distance Matrix Utilities</em>. <a href="https://CRAN.R-project.org/package=usedist">https://CRAN.R-project.org/package=usedist</a>.
+</div>
+<div id="ref-sp" class="csl-entry">
+Bivand, Roger S., Edzer Pebesma, and Virgilio Gomez-Rubio. 2013. <em>Applied Spatial Data Analysis with <span>R</span>, Second Edition</em>. Springer, NY. <a href="https://asdar-book.org/">https://asdar-book.org/</a>.
+</div>
+<div id="ref-boettiger2015introduction" class="csl-entry">
+Boettiger, Carl. 2015. <span>“An Introduction to Docker for Reproducible Research.”</span> <em>ACM SIGOPS Operating Systems Review</em> 49 (1): 71–79.
+</div>
+<div id="ref-leaflet" class="csl-entry">
+Cheng, Joe, Bhaskar Karambelkar, and Yihui Xie. 2019. <em>Leaflet: Create Interactive Web Maps with the JavaScript ’Leaflet’ Library</em>. <a href="https://CRAN.R-project.org/package=leaflet">https://CRAN.R-project.org/package=leaflet</a>.
+</div>
+<div id="ref-darwin1859origin" class="csl-entry">
+Darwin, Charles. 1859. <span>“The Origin of Species and the Descent of Man, New York (the Modern Library).”</span>
+</div>
+<div id="ref-detomasi2018epp" class="csl-entry">
+Detomasi, Richard, Gabriela Mathieu, and Germán Botto. 2018. <span>“EPP v. 0.2: Evaluation of Proximity Programs with OSRM Routing.”</span> In <em>Conferencia Latinoamericana Sobre Uso de r En Investigaci<span>ó</span>n+ Desarrollo (LatinR 2018)-JAIIO 47 (CABA, 2018)</em>.
+</div>
+<div id="ref-flood1956traveling" class="csl-entry">
+Flood, Merrill M. 1956. <span>“The Traveling-Salesman Problem.”</span> <em>Operations Research</em> 4 (1): 61–75.
+</div>
+<div id="ref-osrm" class="csl-entry">
+Giraud, Timothée. 2020. <em>Osrm: Interface Between r and the OpenStreetMap-Based Routing Service OSRM</em>. <a href="https://CRAN.R-project.org/package=osrm">https://CRAN.R-project.org/package=osrm</a>.
+</div>
+<div id="ref-holland1975adaptation" class="csl-entry">
+Holland, John. 1975. <span>“Adaptation in Natural and Artificial Systems: An Introductory Analysis with Application to Biology.”</span> <em>Control and Artificial Intelligence</em>.
+</div>
+<div id="ref-huber2016calculate" class="csl-entry">
+Huber, Stephan, and Christoph Rust. 2016. <span>“Calculate Travel Time and Distance with OpenStreetMap Data Using the Open Source Routing Machine (OSRM).”</span> <em>The Stata Journal</em> 16 (2): 416–23.
+</div>
+<div id="ref-jaffee1996one" class="csl-entry">
+Jaffee, David. 1996. <span>“One Hundred Years on the Road: The Traveling Salesman in American Culture.”</span> JSTOR.
+</div>
+<div id="ref-little1963algorithm" class="csl-entry">
+Little, John DC, Katta G Murty, Dura W Sweeney, and Caroline Karel. 1963. <span>“An Algorithm for the Traveling Salesman Problem.”</span> <em>Operations Research</em> 11 (6): 972–89.
+</div>
+<div id="ref-mirjalili2019genetic" class="csl-entry">
+Mirjalili, Seyedali. 2019. <span>“Genetic Algorithm.”</span> In <em>Evolutionary Algorithms and Neural Networks</em>, 43–55. Springer.
+</div>
+<div id="ref-sf" class="csl-entry">
+Pebesma, Edzer. 2018. <span>“<span class="nocase">Simple Features for R: Standardized Support for Spatial Vector Data</span>.”</span> <em><span>The R Journal</span></em> 10 (1): 439–46. <a href="https://doi.org/10.32614/RJ-2018-009">https://doi.org/10.32614/RJ-2018-009</a>.
+</div>
+<div id="ref-petersen2020ubuntu" class="csl-entry">
+Petersen, Richard. 2020. <em>Ubuntu 20.04 LTS Desktop: Applications and Administration</em>. surfing turtle press.
+</div>
+<div id="ref-R" class="csl-entry">
+R Core Team. 2020. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-raggi2011beginning" class="csl-entry">
+Raggi, Emilio, Keir Thomas, and Sander Van Vugt. 2011. <em>Beginning Ubuntu Linux</em>. Springer.
+</div>
+<div id="ref-GA" class="csl-entry">
+Scrucca, Luca. 2012. <span>“<span>GA</span>: A Package for Genetic Algorithms in r.”</span> <em>Submitted to Journal of Statistical Software</em>.
+</div>
+<div id="ref-tmaptools" class="csl-entry">
+Tennekes, Martijn. 2020. <em>Tmaptools: Thematic Map Tools</em>. <a href="https://CRAN.R-project.org/package=tmaptools">https://CRAN.R-project.org/package=tmaptools</a>.
+</div>
+<div id="ref-readxl" class="csl-entry">
+Wickham, Hadley, and Jennifer Bryan. 2019. <em>Readxl: Read Excel Files</em>. <a href="https://CRAN.R-project.org/package=readxl">https://CRAN.R-project.org/package=readxl</a>.
+</div>
+<div id="ref-dplyr" class="csl-entry">
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2020. <em>Dplyr: A Grammar of Data Manipulation</em>. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Scrucca, L. (2012). GA: A Package for Genetic Algorithms in R. Submitted to Journal of Statistical Software<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://github.com/Project-OSRM/osrm-backend" class="uri">https://github.com/Project-OSRM/osrm-backend</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p><a href="https://www.docker.com/" class="uri">https://www.docker.com/</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p><a href="https://releases.ubuntu.com/20.10/" class="uri">https://releases.ubuntu.com/20.10/</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://operations.osmfoundation.org/policies/nominatim/" class="uri">https://operations.osmfoundation.org/policies/nominatim/</a><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p><a href="https://wiki.osmfoundation.org/wiki/Main_Page" class="uri">https://wiki.osmfoundation.org/wiki/Main_Page</a><a href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>Luxen, D., &amp; Vetter, C. (2011, November). Real-time routing with OpenStreetMap data. In Proceedings of the 19th ACM SIGSPATIAL international conference on advances in geographic information systems (pp. 513-516).<a href="#fnref8" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+<p>Copyright &copy; 2021 SIE-INE, Attribution-ShareAlike 3.0 IGO</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

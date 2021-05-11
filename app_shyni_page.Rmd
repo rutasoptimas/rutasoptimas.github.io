@@ -1,0 +1,21 @@
+---
+title: "Appliación de RO"
+---
+
+
+Hasta este punto del proyecto, debemos compartir que hemos creado una aplicación del proceso que funciona completamente en un servidor de [shinyapps.io](https://www.shinyapps.io/). En particular usaremos la dirección:
+
+- https://jbustosmelo.shinyapps.io/inechileRO-app/
+
+<center>
+![imagen histórica del TSP.](/home/joseignacio/Documentos/Rutas_optimas3/repo_proy_ro/carpeta2/inechilesie.github.io/imagenes/app_ro.png){ width=100% } 
+</center>
+
+<br/><br/>
+
+
+La base de datos georeferenciada corresponde a los puntos del ejercicio de prueba y corresponde a 10 puntos geolocalizados del centro de Santiago [archivo.xlsx](https://drive.google.com/file/d/15SGUB5dlAk_Aef1iLXFNM0XlByd7yHae/view?usp=sharing). En este ejemplo, es posible usar esta misma base de datos para ser usada en la aplicación. 
+
+
+En este esquema de aprendizaje, estamos usando dicho servicio de forma gratuita, lo que es importante considerar ya que tiene limitaciones que eventualmente podrian no satisfacer la demanda interna en nuestra institución. Por lo tanto, en este equema podemos considerar que el INE pueda contratar el servicio, para este proyecto y futuras aplicaciones. 
+
