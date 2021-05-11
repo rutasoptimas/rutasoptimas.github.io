@@ -8,7 +8,7 @@ Hasta este punto del proyecto, debemos compartir que hemos creado una aplicació
 - https://jbustosmelo.shinyapps.io/inechileRO-app/
 
 <center>
-![imagen histórica del TSP.](/home/joseignacio/Documentos/Rutas_optimas3/repo_proy_ro/carpeta2/rutasoptimas/imagenes/app_ro.png){ width=100% } 
+![Imagen de la app.](/home/joseignacio/Documentos/Rutas_optimas3/repo_proy_ro/carpeta2/rutasoptimas/imagenes/app_ro.png){ width=100% } 
 </center>
 
 <br/><br/>
