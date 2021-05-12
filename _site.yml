@@ -1,7 +1,7 @@
 name: "Proyecto RO"
 output_dir: "."
 navbar:
-  title: "<img id=\"logo\" style=\"width: 200px;\" src=\"logo_ine.png\" />"
+  title: "<img id=\"logo\" style=\"width: 150px;\" src=\"logo_ine.png\" />"
   type: inverse
   left:
     - text: "Rutas SP"
@@ -17,7 +17,7 @@ navbar:
       icon: fa-github
 output:
   html_document:
-    theme: paper
+    theme: spacelab
     highlight: textmate
     include:
       after_body: footer.html
