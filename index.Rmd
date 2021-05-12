@@ -2,7 +2,6 @@
 title: "Proyecto Rutas óptimas"
 output:
   html_document:
-    theme: paper
     toc: yes
     toc_depth: 4
     toc_float: yes
